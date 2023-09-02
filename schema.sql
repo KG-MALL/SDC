@@ -30,3 +30,6 @@ CREATE TABLE answer_photos (
     answer_id INTEGER NOT NULL REFERENCES answers(answer_id),
     url TEXT NOT NULL
 );
+
+CREATE INDEX idx_questions_product_id ON questions (product_id);
+CREATE INDEX idx_answers_question_id ON answers (question_id);
