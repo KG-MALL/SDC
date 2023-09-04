@@ -34,17 +34,60 @@ exports.addQuestion = async (req, res) => {
 };
 
 exports.addAnswer = async (req, res) => {
+  try {
+    const {
+      body, name, email,
+    } = req.body;
+    const { question_id } = req.params;
+    const answer = await models.addAnswer(body, name, email, question_id);
 
+    res.status(201).json(answer);
+  } catch (err) {
+    res.status(500).send('Cannot add answer.');
+  }
 };
+
 exports.markQuestionHelpful = async (req, res) => {
+  try {
+    const { question_id } = req.params;
+    const updateHelpfulness = await models.markQuestionHelpful(question_id);
 
+    res.status(201).json(updateHelpfulness);
+  } catch (err) {
+    res.status(500).send('Cannot mark helpful.');
+  }
 };
+
 exports.reportQuestion = async (req, res) => {
+  try {
+    const { question_id } = req.params;
+    const reported = await models.reportQuestion(question_id);
 
+    res.status(201).json(reported);
+  } catch (err) {
+    res.status(500).send('Cannot mark helpful.');
+  }
 };
+
 exports.markAnswerHelpful = async (req, res) => {
+  try {
+    const { answer_id } = req.params;
+    const updateHelpfulness = await models.markAnswerHelpful(answer_id);
 
+    res.status(201).json(updateHelpfulness);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Cannot mark helpful.');
+  }
 };
-exports.reportAnswer = async (req, res) => {
 
+exports.reportAnswer = async (req, res) => {
+  try {
+    const { answer_id } = req.params;
+    const reported = await models.reportAnswer(answer_id);
+
+    res.status(201).json(reported);
+  } catch (err) {
+    res.status(500).send('Cannot mark helpful.');
+  }
 };

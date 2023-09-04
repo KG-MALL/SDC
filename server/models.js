@@ -37,12 +37,68 @@ exports.fetchAnswers = async (questionId, page, count) => {
   };
 };
 
-exports.addQuestion = async (body, name, email, product_id) => {
+exports.addQuestion = async (body, asker_name, asker_email, product_id) => {
   const query = `
-        INSERT INTO questions (body, name, email, product_id, date_written)
+        INSERT INTO questions (body, asker_name, asker_email, product_id, date_written)
         VALUES ($1, $2, $3, $4, EXTRACT(EPOCH FROM NOW())::BIGINT)
         RETURNING question_id`;
-  const values = [body, name, email, product_id];
+
+  const values = [body, asker_name, asker_email, product_id];
   const result = await pool.query(query, values);
+  return result.rows[0];
+};
+
+exports.addAnswer = async (body, answerer_name, answerer_email, question_id) => {
+  const query = `
+        INSERT INTO answers (body, answerer_name, answerer_email, question_id, date_written)
+        VALUES ($1, $2, $3, $4, EXTRACT(EPOCH FROM NOW())::BIGINT)
+        RETURNING answer_id`;
+
+  const values = [body, answerer_name, answerer_email, question_id];
+  const result = await pool.query(query, values);
+  return result.rows[0];
+};
+
+exports.markQuestionHelpful = async (question_id) => {
+  const query = `
+        UPDATE questions
+        SET helpfulness = helpfulness +1
+        WHERE question_id = $1
+        RETURNING helpfulness`;
+  const value = [question_id];
+  const result = await pool.query(query, value);
+  return result.rows[0];
+};
+
+exports.reportQuestion = async (question_id) => {
+  const query = `
+        UPDATE questions
+        SET reported = True
+        WHERE question_id = $1
+        RETURNING reported`;
+  const value = [question_id];
+  const result = await pool.query(query, value);
+  return result.rows[0];
+};
+
+exports.markAnswerHelpful = async (answer_id) => {
+  const query = `
+        UPDATE answers
+        SET helpfulness = helpfulness +1
+        WHERE answer_id = $1
+        RETURNING helpfulness`;
+  const value = [answer_id];
+  const result = await pool.query(query, value);
+  return result.rows[0];
+};
+
+exports.reportAnswer = async (answer_id) => {
+  const query = `
+        UPDATE answers
+        SET reported = True
+        WHERE answer_id = $1
+        RETURNING reported`;
+  const value = [answer_id];
+  const result = await pool.query(query, value);
   return result.rows[0];
 };

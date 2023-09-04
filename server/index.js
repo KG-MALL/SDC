@@ -3,30 +3,25 @@ const express = require('express');
 const controllers = require('./controllers');
 
 const app = express();
-const PORT = 4000;
+const PORT = 4080;
 
 app.use(express.json());
 
+// get qa
 app.get('/qa/questions', controllers.getQuestions);
 app.get('/qa/questions/:question_id/answers', controllers.getAnswers);
 
-// // Add a Question
-// app.post('/qa/questions', controllers.addQuestion);
+// add qa
+app.post('/qa/questions', controllers.addQuestion);
+app.post('/qa/questions/:question_id/answers', controllers.addAnswer);
 
-// // Add an Answer
-// app.post('/qa/questions/:question_id/answers', controllers.addAnswer);
+// helpful and report for questions
+app.put('/qa/questions/:question_id/helpful', controllers.markQuestionHelpful);
+app.put('/qa/questions/:question_id/report', controllers.reportQuestion);
 
-// // Mark Question as Helpful
-// app.put('/qa/questions/:question_id/helpful', controllers.markQuestionHelpful);
-
-// // Report Question
-// app.put('/qa/questions/:question_id/report', controllers.reportQuestion);
-
-// // Mark Answer as Helpful
-// app.put('/qa/answers/:answer_id/helpful', controllers.markAnswerHelpful);
-
-// // Report Answer
-// app.put('/qa/answers/:answer_id/report', controllers.reportAnswer);
+// helpful and report for answers
+app.put('/qa/answers/:answer_id/helpful', controllers.markAnswerHelpful);
+app.put('/qa/answers/:answer_id/report', controllers.reportAnswer);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
