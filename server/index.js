@@ -3,7 +3,6 @@ const express = require('express');
 const controllers = require('./controllers');
 
 const app = express();
-const PORT = 4080;
 
 app.use(express.json());
 
@@ -23,6 +22,10 @@ app.put('/qa/questions/:question_id/report', controllers.reportQuestion);
 app.put('/qa/answers/:answer_id/helpful', controllers.markAnswerHelpful);
 app.put('/qa/answers/:answer_id/report', controllers.reportAnswer);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = 4080;
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+module.exports = app;
