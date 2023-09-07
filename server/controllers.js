@@ -43,6 +43,7 @@ exports.addAnswer = async (req, res) => {
 
     res.status(201).json(answer);
   } catch (err) {
+    console.error(err);
     res.status(500).send('Cannot add answer.');
   }
 };

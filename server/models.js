@@ -1,10 +1,15 @@
-// models.js
+require('dotenv').config();
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  host: 'localhost',
+  host: '184.72.16.148',
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASS,
   database: 'qa',
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 exports.fetchQuestions = async (productId, page, count) => {
@@ -36,16 +41,19 @@ exports.fetchAnswers = async (questionId, page, count) => {
     results: result.rows,
   };
 };
-
 exports.addQuestion = async (body, asker_name, asker_email, product_id) => {
-  const query = `
+  try {
+    const query = `
         INSERT INTO questions (body, asker_name, asker_email, product_id, date_written)
         VALUES ($1, $2, $3, $4, EXTRACT(EPOCH FROM NOW())::BIGINT)
         RETURNING question_id`;
-
-  const values = [body, asker_name, asker_email, product_id];
-  const result = await pool.query(query, values);
-  return result.rows[0];
+    const values = [body, asker_name, asker_email, product_id];
+    const result = await pool.query(query, values);
+    return result.rows[0];
+  } catch (error) {
+    console.error('Error in addQuestion: ', error);
+    throw error;
+  }
 };
 
 exports.addAnswer = async (body, answerer_name, answerer_email, question_id) => {

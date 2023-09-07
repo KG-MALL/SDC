@@ -1,4 +1,4 @@
-// index.js
+require('dotenv').config();
 const express = require('express');
 const controllers = require('./controllers');
 
@@ -23,7 +23,7 @@ app.put('/qa/answers/:answer_id/helpful', controllers.markAnswerHelpful);
 app.put('/qa/answers/:answer_id/report', controllers.reportAnswer);
 
 if (process.env.NODE_ENV !== 'test') {
-  const PORT = 4080;
+  const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
   });

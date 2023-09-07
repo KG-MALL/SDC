@@ -3,9 +3,9 @@ import { check } from 'k6';
 
 export const options = {
   stages: [
-    { duration: '10s', target: 100 }, // up to 100 VUs over 10s
-    { duration: '0s', target: 500 }, // stay at 500 VUs
-    { duration: '10s', target: 0 }, // down to 0 VUs
+    { duration: '1s', target: 5 },
+    { duration: '1s', target: 5 },
+    { duration: '1s', target: 0 },
   ],
 };
 
@@ -19,8 +19,8 @@ export default function () {
   // Assuming the response contains an array of questions, grabbing the ID of the first one
   const questionJson = questionsRes.json();
   let questionId;
-  if (questionJson && questionJson.length > 0) {
-    questionId = questionJson[0].question_id;
+  if (questionJson && questionJson.results && questionJson.results.length > 0) {
+    questionId = questionJson.results[0].question_id;
   }
   // Fetching answers for a question
   if (questionId) {
@@ -35,7 +35,7 @@ export default function () {
     body: 'Sample question body',
     name: 'SampleUser',
     email: 'sample@user.com',
-    product_id: 1,
+    product_id: 40350,
   });
   check(addQuestionRes, {
     'add question status was 201': (r) => r.status === 201,
